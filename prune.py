@@ -21,10 +21,10 @@ from utils import progress_bar
 import numpy as np
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Pruning')
-parser.add_argument('--loadfile', '-l', default="checkpoint/res18.t7",dest='loadfile')
+parser.add_argument('--loadfile', '-l', default="checkpoint/vgg-ckpt.t7",dest='loadfile')
 parser.add_argument('--prune', '-p', default=0.5, dest='prune', help='Parameters to be pruned')
 parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
-parser.add_argument('--net', default='res18')
+parser.add_argument('--net', default='vgg', help='googlenet, alexnet, vgg, res18, res50')
 args = parser.parse_args()
 
 prune = float(args.prune)
@@ -57,6 +57,12 @@ if args.net=='res18':
     net = ResNet18()
 elif args.net=='vgg':
     net = VGG('VGG19')
+elif args.net=='res50':
+    net = ResNet50()
+elif args.net == 'alexnet':
+    net = alexnet()
+elif args.net == 'googlenet':
+    net = googlenet()
     
 net = net.to(device)
 if device == 'cuda':
@@ -178,7 +184,7 @@ def test(epoch):
         }
         if not os.path.isdir('checkpoint'):
             os.mkdir('checkpoint')
-        torch.save(state, './checkpoint/pruned-'+args.net+'-ckpt.t7')
+        torch.save(state, './checkpoint/pruned-'+args.net+'-ckpt-my.t7')
         best_acc = acc
 
 
